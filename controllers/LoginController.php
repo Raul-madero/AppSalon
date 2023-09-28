@@ -9,6 +9,7 @@ class LoginController {
     public static function login(Router $router) {
         $alertas = [];
 
+
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $auth = new Usuario($_POST);
             $alertas = $auth->validarLogin();
@@ -61,12 +62,16 @@ class LoginController {
                 $usuario = Usuario::where('email', $auth->email);
                 if($usuario && $usuario->confirmado == 1) {
                     $usuario->crearToken();
+                    $usuario->guardar();
+                    $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
+                    $email->recuperarPassword();
+                    Usuario::setAlerta('exito', 'Se han enviado a tu correo las instrucciones para reestablecer tu contraseña');
                 }else {
                     Usuario::setAlerta('error', 'El usuario no existe o no esta confirmado');
-                    $alertas = Usuario::getAlertas();
                 }
             }
         }
+        $alertas = Usuario::getAlertas();
         $router->render('auth/olvide-password', [
             'alertas' => $alertas
         ]);
