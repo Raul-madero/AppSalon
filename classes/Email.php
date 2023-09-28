@@ -50,8 +50,8 @@ class Email {
         $mail->Password = '3272d2a6a0311b';
         $mail->SMTPSecure = 'tls';
         //Configurar el contenido del email
-        $mail->setFrom('cuentas@gustavoramirez.com');
-        $mail->addAddress('cuentas@gustavoramirez.com', 'GustavoRamirez.com');
+        $mail->setFrom('admin@appsalon.com');
+        $mail->addAddress('admin@appsalon.com', 'Appsalon.com');
         $mail->Subject = 'Recupera tu contraseña';
         //Habilitar HTML
 
@@ -60,7 +60,7 @@ class Email {
 
         $contenido = "<html>";
         $contenido .= "<p><strong>Hola " . $this->nombre . "</strong> Has solicitado recuperar tu contraseña, para hacerlo da click en el siguiente enlace:</p>";
-        $contenido .= "<a href='http://localhost:3000/recuperar?token=" . $this->token . "'>Recupera tu contraseña</a>";
+        $contenido .= "<a href='http://localhost:8080/recuperar?token=" . $this->token . "'>Recupera tu contraseña</a>";
         $contenido .= "<p>Si tu no solicitaste una nueva contraseña, cambiala en tu cuenta</p>";
         $contenido .= "</html>";
         $mail->Body = $contenido;
