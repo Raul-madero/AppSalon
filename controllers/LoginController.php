@@ -77,7 +77,32 @@ class LoginController {
         ]);
     }
     public static function recuperar(Router $router) {
-        $router->render('auth/recuperar');
+        $alertas = [];
+        $error = false;
+        $token = s($_GET['token']);
+        $usuario = Usuario::where('token', $token);
+        if(empty($usuario)) {
+            Usuario::setAlerta('error', 'Token no valido');
+            $error = true;
+        }
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = new Usuario;
+            $password->validarPassword();
+            if(empty($alertas)) {
+                $usuario->password = $password->password;
+                $usuario->hashPassword();
+                $usuario->token = null;
+                $resultado = $usuario->guardar();
+                if($resultado) {
+                    header('Location: /');
+                }
+            } 
+        }
+        $alertas = Usuario::getAlertas();
+        $router->render('auth/recuperar', [
+            'alertas' => $alertas,
+            'error' => $error
+        ]);
     }
     public static function crear(Router $router) {
         $usuario = new Usuario;
